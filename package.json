@@ -1,11 +1,10 @@
 {
-  "name": "ai-article-generator",
-  "version": "1.0.0",
+    "name": "ai-article-generator",
+    "version": "1.0.0",
   "main": "index.js",
-"scripts": {
-  "dev": "ts-node-dev --respawn --transpile-only --project src/backend/tsconfig.json src/backend/src/app.ts"
-},
-
+    "scripts": {
+    "dev": "ts-node-dev --respawn --transpile-only --project src/backend/tsconfig.json src/backend/src/app.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -13,12 +12,14 @@
   "dependencies": {
     "cors": "^2.8.5",
     "dotenv": "^16.5.0",
-    "express": "^5.1.0"
+    "express": "^5.1.0",
+    "openai": "^4.95.1"
   },
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.1",
     "@types/node": "^22.14.1",
     "ts-node-dev": "^2.0.0"
+    }
   }
-}
+
