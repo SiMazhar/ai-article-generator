@@ -1,29 +1,22 @@
-// src/app.ts
+// File: src/app.ts
+// src/backend/src/app.ts
+import dotenv from "dotenv";
+dotenv.config();
 
 import express from "express";
 import cors from "cors";
 import generateArticleRouter from "./routes/generateArticleRouter";
 
 const app = express();
+const PORT = Number(process.env.PORT) || 5000;
 
-// Enable CORS
 app.use(cors());
-
-// Parse JSON bodies
 app.use(express.json());
-app.use("/api", generateArticleRouter); 
 
-(async () => {
-  const topic = "default topic"; // Define the topic variable
-  const res = await fetch("http://localhost:5000/api/generate", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ topic }),
-  });
-})();
+// Mount the router
+app.use("/api", generateArticleRouter);
 
-export default app;
-
-// Added .listen() call
-const port = process.env.port || 5000;
-app.listen(port, () => console.log(`Server listening on port ${port}`));
+// Start listening
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`🚀 Server listening on port ${PORT}`);
+});

@@ -12,18 +12,25 @@ export default function App() {
     setError(null);
     setResult(null);
 
+    // Create an AbortController to timeout the request after 60 seconds.
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
+
     try {
-      const res = await fetch("http://localhost:5000/api/generate", {
+      const res = await fetch("http://localhost:5000/api/generateArticle", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ topic }),
+        signal: controller.signal
       });
+
       if (!res.ok) throw new Error(`Status ${res.status}`);
       const data = await res.json();
       setResult(data);
     } catch (err: any) {
-      setError(err.message);
+      setError(err.name === "AbortError" ? "Request timed out" : err.message);
     } finally {
+      clearTimeout(timeoutId);
       setLoading(false);
     }
   };

@@ -1,12 +1,13 @@
 // src/services/AiGenerationService.ts
 
-import OpenAI from "openai";
+import { Configuration, OpenAIApi } from "openai"; // Updated import
 import dotenv from "dotenv";
 dotenv.config();
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY || "";
-
-const openai = new OpenAI({ apiKey: OPENAI_API_KEY });
+const configuration = new Configuration({
+  apiKey: process.env.OPENAI_API_KEY, // API key loaded from .env file
+});
+const openai = new OpenAIApi(configuration); // Updated instantiation
 
 export class AiGenerationService {
   /**
@@ -14,14 +15,14 @@ export class AiGenerationService {
    */
   static async generateArticle(topic: string): Promise<string> {
     const prompt = `Write a concise top ten article about "${topic}".`;
-    const completion = await openai.chat.completions.create({
-      model: "gpt-4o",
+    const completion = await openai.createChatCompletion({
+      model: "gpt-4",
       messages: [{ role: "user", content: prompt }],
     });
-    if (!completion.choices[0].message.content) {
+    if (!completion.data.choices[0].message?.content) {
       throw new Error("The AI response content is null or undefined.");
     }
-    return completion.choices[0].message.content;
+    return completion.data.choices[0].message.content;
   }
 
   /**
@@ -33,10 +34,8 @@ export class AiGenerationService {
     url: string;
   }> {
     const imagePrompt = `An illustrative photo related to ${topic}`;
-    // In future: call openai.images.generate(...)
     const dummyUrl = "https://example.com/dummy-image.jpg";
     return { prompt: imagePrompt, url: dummyUrl };
   }
 }
 
-  

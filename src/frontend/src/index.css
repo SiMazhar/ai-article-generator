@@ -11,6 +11,9 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  /* new variable for article colour */
+  --article-color: rgba(255, 255, 255, 0.87);
 }
 
 a {
@@ -25,7 +28,10 @@ a:hover {
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  justify-content: center; /* added */
+  align-items: center;     /* added */
+  flex-direction: column;  /* added */
+  text-align: center;      /* added */
   min-width: 320px;
   min-height: 100vh;
 }
@@ -42,7 +48,7 @@ button {
   font-size: 1em;
   font-weight: 500;
   font-family: inherit;
-  background-color: #1a1a1a;
+  background-color: var(--article-color); /* updated */
   cursor: pointer;
   transition: border-color 0.25s;
 }
@@ -54,10 +60,23 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+form {
+  display: flex;
+  flex-direction: column; /* updated */
+  align-items: center;    /* added */
+}
+
+/* added rule to increase search bar width */
+input {
+  width: 400px;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
     background-color: #ffffff;
+    /* override the article colour variable */
+    --article-color: #213547;
   }
   a:hover {
     color: #747bff;
