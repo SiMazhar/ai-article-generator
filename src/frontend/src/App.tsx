@@ -74,16 +74,29 @@ export default function App() {
           <h2 className="text-xl mb-2">Article</h2>
           <div className="article-container">
             {(() => {
-              // Split article by paragraphs
-              const paragraphs = result.article.split("\n\n");
+              // Split article by paragraphs and remove any paragraph equal to "introduction:"
+              const paragraphs = result.article
+                .split("\n\n")
+                .filter(para => para.trim().toLowerCase() !== "introduction:");
               return (
                 <>
-                  {/* Render first three paragraphs without images */}
+                  {/* Render first three paragraphs */}
                   {paragraphs.slice(0, 3).map((para, idx) => (
                     <div key={idx} className="mb-4">
-                      <p>{para}</p>
+                      <p>
+                        {idx === 0 ? (
+                          // First paragraph: special processing remains (bold, double size, text processed)
+                          <span style={{ fontSize: "200%" }}>
+                            <strong>{para.replace(/title/gi, '').replace(/"/g, '').replace(/:/g, '')}</strong>
+                          </span>
+                        ) : (
+                          // For paragraphs after the first, bold if global index is even
+                          (idx % 2 === 0) ? (<strong>{para}</strong>) : (para)
+                        )}
+                      </p>
                     </div>
                   ))}
+                  
                   {/* Render remaining paragraphs in pairs with an image between */}
                   {(() => {
                     const remaining = paragraphs.slice(3);
@@ -95,7 +108,13 @@ export default function App() {
                       <div key={groupIdx} className="mb-4">
                         {group[0] && (
                           <div className="mb-2">
-                            <p>{group[0]}</p>
+                            <p>
+                              {(3 + groupIdx * 2) % 2 === 0 ? (
+                                <strong>{group[0]}</strong>
+                              ) : (
+                                group[0]
+                              )}
+                            </p>
                           </div>
                         )}
                         {result.images[groupIdx] && (
@@ -109,7 +128,16 @@ export default function App() {
                         )}
                         {group[1] && (
                           <div className="mt-2">
-                            <p>{group[1]}</p>
+                            <p>
+                              {(3 + groupIdx * 2 + 1 === paragraphs.length - 1) ? (
+                                // This is the last paragraph, render without bold
+                                group[1]
+                              ) : ((3 + groupIdx * 2 + 1) % 2 === 0 ? (
+                                <strong>{group[1]}</strong>
+                              ) : (
+                                group[1]
+                              ))}
+                            </p>
                           </div>
                         )}
                       </div>
@@ -119,6 +147,10 @@ export default function App() {
               );
             })()}
           </div>
+          {/* Disclaimer */}
+          <p className="text-xs italic mt-4" style={{ fontSize: "75%" }}>
+            Images generated using AI and may not be an accurate.
+          </p>
         </div>
       )}
     </div>
