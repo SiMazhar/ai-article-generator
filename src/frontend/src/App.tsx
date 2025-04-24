@@ -47,7 +47,7 @@ export default function App() {
           placeholder="Enter a topic…"
           className="border p-2 mr-2"
         />
-        <button type="submit" className="bg-blue-500 text-white px-4 py-2">
+        <button type="submit" disabled={loading} className="bg-blue-500 text-white px-4 py-2">
           Generate
         </button>
         {/* Moved spinner inside the form, directly under the button */}
@@ -68,15 +68,15 @@ export default function App() {
               const paragraphs = result.article.split("\n\n");
               return (
                 <>
-                  {/* Render the first two paragraphs without images */}
-                  {paragraphs.slice(0, 2).map((para, idx) => (
+                  {/* Render the first three paragraphs without images */}
+                  {paragraphs.slice(0, 3).map((para, idx) => (
                     <div key={idx} className="mb-4">
                       <p>{para}</p>
                     </div>
                   ))}
                   {/* For subsequent paragraphs, group in pairs and insert an image between them */}
                   {(() => {
-                    const remaining = paragraphs.slice(2);
+                    const remaining = paragraphs.slice(3);
                     const groups = [];
                     for (let i = 0; i < remaining.length; i += 2) {
                       groups.push(remaining.slice(i, i + 2));
