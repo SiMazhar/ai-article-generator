@@ -1,19 +1,23 @@
+// Import statements
 import { useState, FormEvent } from "react";
-import ReactLoading from 'react-loading'; // added import for loading spinner
+import ReactLoading from 'react-loading'; 
 
 export default function App() {
+  // State declarations
   const [topic, setTopic] = useState("");
   const [result, setResult] = useState<{ article: string; images: { prompt: string; url: string }[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
+  // Handle form submission and API request with timeout
   const handleSubmit = async (e: FormEvent) => {
+    // Prevent default form action
     e.preventDefault();
     setLoading(true);
     setError(null);
     setResult(null);
 
-    // Create an AbortController to timeout the request after 120 seconds.
+    // Setup for request timeout using AbortController
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 120000);
 
@@ -38,8 +42,10 @@ export default function App() {
 
   return (
     <div className="p-4 max-w-xl mx-auto">
-      <h1 className="text-2xl mb-4">AI Article Generator</h1>
+      {/* App header */}
+      <h1 className="text-2xl mb-4">AI "Top Five" Article Generator</h1>
       <form onSubmit={handleSubmit} className="mb-4">
+        {/* Topic input field */}
         <input
           type="text"
           value={topic}
@@ -47,10 +53,11 @@ export default function App() {
           placeholder="Enter a topic…"
           className="border p-2 mr-2"
         />
+        {/* Generate button */}
         <button type="submit" disabled={loading} className="bg-blue-500 text-white px-4 py-2">
           Generate
         </button>
-        {/* Moved spinner inside the form, directly under the button */}
+        {/* Loading spinner displayed when request is in progress */}
         {loading && (
           <div className="flex justify-center items-center w-full my-4">
             <ReactLoading type="balls" color="#213547" height={35} width={35} />
@@ -58,23 +65,26 @@ export default function App() {
         )}
       </form>
 
+      {/* Display error message if any */}
       {error && <p className="text-red-500">Error: {error}</p>}
 
+      {/* Render article and images when available */}
       {result && (
         <div>
           <h2 className="text-xl mb-2">Article</h2>
           <div className="article-container">
             {(() => {
+              // Split article by paragraphs
               const paragraphs = result.article.split("\n\n");
               return (
                 <>
-                  {/* Render the first three paragraphs without images */}
+                  {/* Render first three paragraphs without images */}
                   {paragraphs.slice(0, 3).map((para, idx) => (
                     <div key={idx} className="mb-4">
                       <p>{para}</p>
                     </div>
                   ))}
-                  {/* For subsequent paragraphs, group in pairs and insert an image between them */}
+                  {/* Render remaining paragraphs in pairs with an image between */}
                   {(() => {
                     const remaining = paragraphs.slice(3);
                     const groups = [];

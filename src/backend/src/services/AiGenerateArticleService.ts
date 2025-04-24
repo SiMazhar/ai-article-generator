@@ -1,15 +1,17 @@
 // src/services/AiGenerationService.ts
 
+/* Imports & Environment Configuration */
 import { Configuration, OpenAIApi } from "openai"; // Updated import
 import dotenv from "dotenv";
 dotenv.config();
 
+/* Setup OpenAI Configuration and Instance */
 const configuration = new Configuration({
   apiKey: process.env.OPENAI_API_KEY, // API key loaded from .env file
 });
 const openai = new OpenAIApi(configuration); // Updated instantiation
 
-
+/* Interfaces: Define types for generated images and articles */
 export interface GeneratedImage {
   url: string;
   description: string;
@@ -20,13 +22,14 @@ export interface GeneratedArticle {
   images: GeneratedImage[];
 }
 
-/**
- * Generate an article and five illustrative images based on the topic.
- */
+/* 
+   Function: generateArticleWithImages
+   Purpose: Generate an article and five illustrative images based on the topic.
+*/
 export async function generateArticleWithImages(
   topic: string
 ): Promise<GeneratedArticle> {
-  // 1. Create the article via chat
+  /* Step 1: Generate the article via chat */
   const articleResp = await openai.createChatCompletion({
     model: "gpt-4",
     messages: [
@@ -40,7 +43,7 @@ export async function generateArticleWithImages(
     throw new Error("Failed to generate article content.");
   }
 
-  // 2. Ask GPT for five image captions instead of two
+  /* Step 2: Generate five image captions */
   const captionResp = await openai.createChatCompletion({
     model: "gpt-4",
     messages: [
@@ -50,14 +53,14 @@ export async function generateArticleWithImages(
     temperature: 0.5
   });
   const rawCaptions = captionResp.data.choices?.[0]?.message?.content?.trim() ?? "";
-  // Split lines and take the first five non-empty captions
+  // Process captions: split lines, trim, filter non-empty, and pick first five
   const captions = rawCaptions
-    .split(/\r?\n/)         
+    .split(/\r?\n/)
     .map(line => line.trim())
     .filter(line => line.length > 0)
     .slice(0, 5);
 
-  // 3. Generate images for each caption (five images total)
+  /* Step 3: Generate an image for each caption */
   const images: GeneratedImage[] = [];
   for (const description of captions) {
     const imgResp = await openai.createImage({
@@ -71,5 +74,6 @@ export async function generateArticleWithImages(
     });
   }
 
+  /* Return generated article and images */
   return { article, images };
 }

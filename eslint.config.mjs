@@ -11,3 +11,5 @@ export default defineConfig([
   tseslint.configs.recommended,
   pluginReact.configs.flat.recommended,
 ]);
+
+// Removed invalid object-like structure as it is not part of a valid JavaScript expression.

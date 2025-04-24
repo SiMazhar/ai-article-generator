@@ -1,3 +1,4 @@
+/* Root container styling */
 #root {
   max-width: 1280px;
   margin: 0 auto;
@@ -5,19 +6,25 @@
   text-align: center;
 }
 
+/* Logo styling */
 .logo {
   height: 6em;
   padding: 1.5em;
   will-change: filter;
   transition: filter 300ms;
 }
+
+/* Logo hover effect */
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
 }
+
+/* React logo specific hover effect */
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);
 }
 
+/* Keyframes for logo spin animation */
 @keyframes logo-spin {
   from {
     transform: rotate(0deg);
@@ -27,30 +34,36 @@
   }
 }
 
+/* Media query: apply animation only if no reduced motion preference */
 @media (prefers-reduced-motion: no-preference) {
   a:nth-of-type(2) .logo {
     animation: logo-spin infinite 20s linear;
   }
 }
 
+/* Card component styling */
 .card {
   padding: 2em;
 }
 
+/* Documentation text styling */
 .read-the-docs {
   color: #888;
 }
 
+/* Article text containert */
 .article-text {
   width: 75%;
   margin: 0 auto;
-  text-align: left;  /* added to keep text to the left */
+  text-align: left;
 }
 
+/* Article title styling */
 .article-title {
   text-align: center;
 }
 
+/* Spinner container for loading indicator */
 .spinner-container {
   display: flex;
   justify-content: center;

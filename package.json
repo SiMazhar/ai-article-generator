@@ -3,7 +3,9 @@
     "version": "1.0.0",
     "main": "index.js",
     "scripts": {
-        "dev": "ts-node-dev --respawn --transpile-only --project src/backend/tsconfig.json src/backend/src/app.ts"
+        "dev": "ts-node-dev --respawn --transpile-only --project src/backend/tsconfig.json src/backend/src/app.ts",
+        "lint": "eslint --ext .ts,.tsx,.js,.jsx src",
+        "format": "prettier --write 'src/**/*.{ts,tsx,js,jsx,json,css,md}'"
     },
     "keywords": [],
     "author": "",
@@ -16,9 +18,18 @@
         "openai": "^3.3.0"
     },
     "devDependencies": {
+        "@eslint/js": "^9.25.1",
         "@types/cors": "^2.8.17",
         "@types/express": "^5.0.1",
         "@types/node": "^22.14.1",
-        "ts-node-dev": "^2.0.0"
+        "eslint": "^9.25.1",
+        "eslint-config-prettier": "^10.1.2",
+        "eslint-plugin-import": "^2.31.0",
+        "eslint-plugin-react": "^7.37.5",
+        "globals": "^16.0.0",
+        "husky": "^9.1.7",
+        "prettier": "^3.5.3",
+        "ts-node-dev": "^2.0.0",
+        "typescript-eslint": "^8.31.0"
     }
 }

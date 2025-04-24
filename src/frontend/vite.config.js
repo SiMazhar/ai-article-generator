@@ -9,6 +9,6 @@ export default defineConfig({
   resolve: {
     alias: {
       '@': path.resolve(__dirname, 'src')
-    } // added missing closing brace for alias
-  } // added missing closing brace for resolve
-}) // added missing closing parenthesis for defineConfig
+    }
+  } 
+}) 
