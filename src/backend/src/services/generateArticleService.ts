@@ -1,6 +1,6 @@
 // src/services/generateArticleService.ts
 
-import { AiGenerationService } from "./AiGenerateArticleService";
+import { generateArticleWithImages } from "./AiGenerateArticleService";
 
 export interface GeneratedArticle {
   article: string;
@@ -10,11 +10,14 @@ export interface GeneratedArticle {
 export const generateArticle = async (
   topic: string
 ): Promise<GeneratedArticle> => {
-  const article = await AiGenerationService.generateArticle(topic);
-  const image = await AiGenerationService.generateImage(topic);
+  // Use the integrated function to generate article and images
+  const result = await generateArticleWithImages(topic);
   return {
-    article,
-    images: [image],  // for now just one
+    article: result.article,
+    images: result.images.map(image => ({
+      prompt: "Default prompt", // Use a default value since 'prompt' does not exist
+      url: image.url,
+    })),
   };
 };
 

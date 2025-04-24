@@ -1,4 +1,5 @@
 import { useState, FormEvent } from "react";
+import ReactLoading from 'react-loading'; // added import for loading spinner
 
 export default function App() {
   const [topic, setTopic] = useState("");
@@ -49,35 +50,65 @@ export default function App() {
         <button type="submit" className="bg-blue-500 text-white px-4 py-2">
           Generate
         </button>
+        {/* Moved spinner inside the form, directly under the button */}
+        {loading && (
+          <div className="flex justify-center items-center w-full my-4">
+            <ReactLoading type="balls" color="#213547" height={35} width={35} />
+          </div>
+        )}
       </form>
 
-      {loading && <p>Loading…</p>}
       {error && <p className="text-red-500">Error: {error}</p>}
 
       {result && (
         <div>
           <h2 className="text-xl mb-2">Article</h2>
-          {/* Wrap article text in a div that uses the .article-container class */}
           <div className="article-container">
-            <p className="mb-4">
-              {result.article.split("\n\n").map((para, idx, arr) => (
-                <span key={idx}>
-                  {para}
-                  {idx !== arr.length - 1 && (<><br /><br /><br /><br /><br /></>)}
-                </span>
-              ))}
-            </p>
+            {(() => {
+              const paragraphs = result.article.split("\n\n");
+              return (
+                <>
+                  {/* Render the first two paragraphs without images */}
+                  {paragraphs.slice(0, 2).map((para, idx) => (
+                    <div key={idx} className="mb-4">
+                      <p>{para}</p>
+                    </div>
+                  ))}
+                  {/* For subsequent paragraphs, group in pairs and insert an image between them */}
+                  {(() => {
+                    const remaining = paragraphs.slice(2);
+                    const groups = [];
+                    for (let i = 0; i < remaining.length; i += 2) {
+                      groups.push(remaining.slice(i, i + 2));
+                    }
+                    return groups.map((group, groupIdx) => (
+                      <div key={groupIdx} className="mb-4">
+                        {group[0] && (
+                          <div className="mb-2">
+                            <p>{group[0]}</p>
+                          </div>
+                        )}
+                        {result.images[groupIdx] && (
+                          <div className="my-2">
+                            <img
+                              src={result.images[groupIdx].url}
+                              alt={result.images[groupIdx].prompt}
+                              className="border"
+                            />
+                          </div>
+                        )}
+                        {group[1] && (
+                          <div className="mt-2">
+                            <p>{group[1]}</p>
+                          </div>
+                        )}
+                      </div>
+                    ));
+                  })()}
+                </>
+              );
+            })()}
           </div>
-          <h3 className="text-lg mb-2">Images</h3>
-          <ul>
-            {result.images.map((img, i) => (
-              <li key={i} className="mb-4">
-                <strong>Prompt:</strong> {img.prompt}
-                <br />
-                <img src={img.url} alt={img.prompt} className="mt-2 border" />
-              </li>
-            ))}
-          </ul>
         </div>
       )}
     </div>

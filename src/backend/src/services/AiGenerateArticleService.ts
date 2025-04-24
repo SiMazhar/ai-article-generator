@@ -9,6 +9,7 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration); // Updated instantiation
 
+
 export interface GeneratedImage {
   url: string;
   description: string;
@@ -20,7 +21,7 @@ export interface GeneratedArticle {
 }
 
 /**
- * Generate an article and two illustrative images based on the topic.
+ * Generate an article and five illustrative images based on the topic.
  */
 export async function generateArticleWithImages(
   topic: string
@@ -39,24 +40,24 @@ export async function generateArticleWithImages(
     throw new Error("Failed to generate article content.");
   }
 
-  // 2. Ask GPT for two image captions
+  // 2. Ask GPT for five image captions instead of two
   const captionResp = await openai.createChatCompletion({
     model: "gpt-4",
     messages: [
       { role: "system", content: "You are a helpful assistant that provides brief image captions." },
-      { role: "user", content: `Provide two short captions, each on its own line, for illustrative images related to the article on \"${topic}\".` }
+      { role: "user", content: `Provide five short captions, each on its own line, for illustrative images related to the article on \"${topic}\".` }
     ],
     temperature: 0.5
   });
   const rawCaptions = captionResp.data.choices?.[0]?.message?.content?.trim() ?? "";
-  // Split lines and take the first two non-empty
+  // Split lines and take the first five non-empty captions
   const captions = rawCaptions
     .split(/\r?\n/)         
     .map(line => line.trim())
     .filter(line => line.length > 0)
-    .slice(0, 2);
+    .slice(0, 5);
 
-  // 3. Generate images for each caption
+  // 3. Generate images for each caption (five images total)
   const images: GeneratedImage[] = [];
   for (const description of captions) {
     const imgResp = await openai.createImage({
