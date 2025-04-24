@@ -40,3 +40,13 @@
 .read-the-docs {
   color: #888;
 }
+
+.article-text {
+  width: 75%;
+  margin: 0 auto;
+  text-align: left;  /* added to keep text to the left */
+}
+
+.article-title {
+  text-align: center;
+}

@@ -71,6 +71,17 @@ input {
   width: 400px;
 }
 
+/* Optional: enforce article text to be 75% of page width */
+.article-container {
+  width: 75%;
+  margin: 0 auto;
+  text-align: left; /* added to keep text to the left */
+}
+
+.article-title {
+  text-align: center;
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;

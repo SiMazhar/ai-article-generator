@@ -14,7 +14,7 @@ export class AiGenerationService {
    * Generate a text article on a given topic.
    */
   static async generateArticle(topic: string): Promise<string> {
-    const prompt = `Write a concise top ten article about "${topic}".`;
+    const prompt = `Write a top ten article about "${topic}".`;
     const completion = await openai.createChatCompletion({
       model: "gpt-4",
       messages: [{ role: "user", content: prompt }],

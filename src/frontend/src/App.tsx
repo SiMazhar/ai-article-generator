@@ -57,7 +57,17 @@ export default function App() {
       {result && (
         <div>
           <h2 className="text-xl mb-2">Article</h2>
-          <p className="whitespace-pre-wrap mb-4">{result.article}</p>
+          {/* Wrap article text in a div that uses the .article-container class */}
+          <div className="article-container">
+            <p className="mb-4">
+              {result.article.split("\n\n").map((para, idx, arr) => (
+                <span key={idx}>
+                  {para}
+                  {idx !== arr.length - 1 && (<><br /><br /><br /><br /><br /></>)}
+                </span>
+              ))}
+            </p>
+          </div>
           <h3 className="text-lg mb-2">Images</h3>
           <ul>
             {result.images.map((img, i) => (

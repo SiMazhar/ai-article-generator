@@ -16,6 +16,9 @@ app.use(express.json());
 // Mount the router
 app.use("/api", generateArticleRouter);
 
+
+console.log("↪ About to call listen on port", PORT);
+
 // Start listening
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 Server listening on port ${PORT}`);
