@@ -12,9 +12,9 @@ export default function App() {
     setError(null);
     setResult(null);
 
-    // Create an AbortController to timeout the request after 60 seconds.
+    // Create an AbortController to timeout the request after 120 seconds.
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    const timeoutId = setTimeout(() => controller.abort(), 120000);
 
     try {
       const res = await fetch("http://localhost:5000/api/generateArticle", {

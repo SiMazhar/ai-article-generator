@@ -9,33 +9,66 @@ const configuration = new Configuration({
 });
 const openai = new OpenAIApi(configuration); // Updated instantiation
 
-export class AiGenerationService {
-  /**
-   * Generate a text article on a given topic.
-   */
-  static async generateArticle(topic: string): Promise<string> {
-    const prompt = `Write a top ten article about "${topic}".`;
-    const completion = await openai.createChatCompletion({
-      model: "gpt-4",
-      messages: [{ role: "user", content: prompt }],
-    });
-    if (!completion.data.choices[0].message?.content) {
-      throw new Error("The AI response content is null or undefined.");
-    }
-    return completion.data.choices[0].message.content;
-  }
-
-  /**
-   * Stubbed image generation: returns one dummy URL
-   * and a corresponding prompt.
-   */
-  static async generateImage(topic: string): Promise<{
-    prompt: string;
-    url: string;
-  }> {
-    const imagePrompt = `An illustrative photo related to ${topic}`;
-    const dummyUrl = "https://example.com/dummy-image.jpg";
-    return { prompt: imagePrompt, url: dummyUrl };
-  }
+export interface GeneratedImage {
+  url: string;
+  description: string;
 }
 
+export interface GeneratedArticle {
+  article: string;
+  images: GeneratedImage[];
+}
+
+/**
+ * Generate an article and two illustrative images based on the topic.
+ */
+export async function generateArticleWithImages(
+  topic: string
+): Promise<GeneratedArticle> {
+  // 1. Create the article via chat
+  const articleResp = await openai.createChatCompletion({
+    model: "gpt-4",
+    messages: [
+      { role: "system", content: "You are an expert writer." },
+      { role: "user", content: `Write a detailed top five article about \"${topic}\".` }
+    ],
+    temperature: 0.7
+  });
+  const article = articleResp.data.choices?.[0]?.message?.content?.trim();
+  if (!article) {
+    throw new Error("Failed to generate article content.");
+  }
+
+  // 2. Ask GPT for two image captions
+  const captionResp = await openai.createChatCompletion({
+    model: "gpt-4",
+    messages: [
+      { role: "system", content: "You are a helpful assistant that provides brief image captions." },
+      { role: "user", content: `Provide two short captions, each on its own line, for illustrative images related to the article on \"${topic}\".` }
+    ],
+    temperature: 0.5
+  });
+  const rawCaptions = captionResp.data.choices?.[0]?.message?.content?.trim() ?? "";
+  // Split lines and take the first two non-empty
+  const captions = rawCaptions
+    .split(/\r?\n/)         
+    .map(line => line.trim())
+    .filter(line => line.length > 0)
+    .slice(0, 2);
+
+  // 3. Generate images for each caption
+  const images: GeneratedImage[] = [];
+  for (const description of captions) {
+    const imgResp = await openai.createImage({
+      prompt: description,
+      n: 1,
+      size: "512x512"
+    });
+    images.push({
+      url: imgResp.data.data[0].url!,
+      description
+    });
+  }
+
+  return { article, images };
+}
