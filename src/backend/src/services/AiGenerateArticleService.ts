@@ -61,18 +61,17 @@ export async function generateArticleWithImages(
     .slice(0, 5);
 
   /* Step 3: Generate an image for each caption */
-  const images: GeneratedImage[] = [];
-  for (const description of captions) {
-    const imgResp = await openai.createImage({
-      prompt: description,
-      n: 1,
-      size: "512x512"
-    });
-    images.push({
-      url: imgResp.data.data[0].url!,
-      description
-    });
-  }
+  // Parallelize image generation calls
+  const imagePromises = captions.map(description =>
+    openai.createImage({ prompt: description, n: 1, size: "512x512" })
+  );
+  const imgResponses = await Promise.all(imagePromises);
+
+  const images: GeneratedImage[] = imgResponses.map((img, i) => ({
+    url: img.data.data[0].url!,
+    description: captions[i]
+  }));
+
 
   /* Return generated article and images */
   return { article, images };
